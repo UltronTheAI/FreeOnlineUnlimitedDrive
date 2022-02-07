@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="drive.png">
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Unlimited Drive</title>
+</head>
+<body>
+    <script>
+        var fd1 = '';
+        var fd2 = '';
+        var fd3 = '';
+    </script>
+    <div class="bot">
+        <div class="l1">
+            <div class="box" onclick="document.querySelector('.fm').style.display='block';">File System</div>
+            <div class="bbox">Files</div>
+        </div>
+        <div class="l2">
+            <div class="box">Images</div>
+            <div class="bbox">Video</div>
+        </div>
+        <div class="fm">
+            <div class="sp"><span onclick="document.querySelector('.fm').style.display='none';">Back</span><span>File System</span></div>
+            <div class="Free.txt"><h3 id="Free.txt">Free.txt</h3><div class="left"><img src="open.png" onclick="FileSystem();document.querySelector('.fm3').style.display='none'; fd1 = 'Free.txt';open_file (fd1);"><img src="edit.jpg" onclick="FileSystem();document.querySelector('.fm2').style.display = 'flex'; fd2 = 'Free.txt'; document.querySelector('#kkk').value = fd2;"  alt=""><img src="download.png" onclick="FileSystem();SR(this.id);" id="Free.txt"></div></div>
+        </div>
+        <div class="fm2">
+            <input type="text" id="kkk">
+            <button onclick="socket.emit('Delete', [name_, password, '', fd2, '']);document.querySelector('.fm2').style.display='none';FileSystem();">Delete</button>
+            <button onclick="socket.emit('Delete', [name_, password, '', fd2, '']);socket.emit('Write', [name_, password, 'r', document.querySelector('#kkk').value, FileSystem(fd2)]);FileSystem();document.querySelector('.fm2').style.display='none';">Back</button>
+        </div>
+        <div class="fm3">
+            <div class="i">
+                <textarea></textarea>
+                <button onclick="socket.emit('Write', [name_, password, '', fd1, document.querySelector('.fm3 textarea').value]);document.querySelector('.fm3').style.display='none';FileSystem();">Back</button>
+            </div>
+        </div>
+    </div>
+    <div class="top">
+        <div class="f">
+            <img src="drive.png">
+            <h1>Drive</h1>
+        </div>
+        <div class="e">
+            <h1 id="lt">Login</h1>
+            <img src="login.png" alt="" onclick="CO2()">
+        </div>
+        <div class="menu">
+            <span id="c"></span>
+            <span id="s1">
+                <img src="login.png" alt="">
+                <h1 onclick="document.querySelector('#ta').style.display='flex'; CO()">Sign-up</h1>
+            </span>
+            <span id="s1" onclick="CO()" class="s12">
+                <img src="login.png" alt="">
+                <h1 onclick="document.getElementById('l').style.display='flex'; CO()">Login</h1>
+            </span>
+            <span id="s2" onclick="document.getElementById('l2').style.display='flex'; CO()">
+                <img src="login.png" alt="">
+                <h1>Upload</h1>
+            </span>
+            <span id="s8" onclick="document.querySelector('#ms2').style.display='flex'; CO()">
+                <img src="login.png" alt="">
+                <h1>About</h1>
+            </span>
+            <span id="s3" onclick="localStorage.removeItem('name'); localStorage.removeItem('password'); CO(); d_acc (); location.reload();">
+                <img src="login.png" alt="">
+                <h1>Log-out</h1>
+            </span>
+            <span id="s4" onclick="document.querySelector('.menu').style.display='none'; CO()">
+                <img src="login.png" alt="">
+                <h1>Back</h1>
+            </span>
+        </div>
+    </div>
+    <div class="message" id="ms2">
+        <div class="box">
+            <h1>About</h1>
+            <p>Hi There, <br>This Drive is Free And Unlimited Storage...<br>How To Use This Drive, First <br><br>1.Click ON Options<br>2.Click On Sign-up<br>3.Sign Up<br>4.Now Use IT<br>5.To Upload File Go To Options And Click Upload...<br><br>Thank`s For Comming, Bye Take Care...</p>
+            <button onclick="document.querySelector('#ms2').style.display='none';">Back</button>
+        </div>
+    </div>
+    <div class="message" id="ta">
+        <div class="box">
+            <h1>
+                Sign- Up
+            </h1>
+            <p>I Have Account <button onclick="document.getElementById('l').style.display='flex'; document.querySelector('.message').style.display='none';">Login</button></p>
+            <input type="text" placeholder="Name" id="sn_">
+            <input type="password" placeholder="Password" id="sp_">
+            <button onclick="document.querySelector('#ta').style.display='none'; SUP();">Sign Up</button>
+            <button onclick="document.querySelector('#ta').style.display='none';">Back</button>
+        </div>
+    </div>
+    <div class="message" id="l">
+        <div class="box">
+            <h1>
+                Login
+            </h1>
+            <p>I Have No Account <button onclick="document.querySelector('#ta').style.display='flex'; document.getElementById('l').style.display='none';">Sign Up</button></p>
+            <input type="text" placeholder="Name" id="sn1_">
+            <input type="password" placeholder="Password" id="sp1_">
+            <button onclick="document.getElementById('l').style.display='none'; SUP2();">Login</button>
+            <button onclick="document.getElementById('l').style.display='none';">Back</button>
+        </div>
+    </div>
+    <div class="message" id="l2">
+        <div class="box">
+            <h1>
+                Login
+            </h1>
+            <p>I Have No Account</p>
+            <input type="text" placeholder="File Name" id="tets1">
+            <textarea id="tets2" placeholder="Text"></textarea>
+            <button onclick="document.getElementById('l2').style.display='none'; SUP3(); FileSystem(undefined);">Upload</button>
+            <button onclick="document.getElementById('l2').style.display='none';">Back</button>
+        </div>
+    </div>
+    <script>
+        var oc = 0;
+        var iid = '';
+        var file_id = '';
+        var fdram = {};
+        var fdd5 = [];
+        function CO () {
+            var menu = document.querySelector('.menu');
+            menu.style.display = 'none';
+        }
+        function CO2() {
+            var menu = document.querySelector('.menu');
+            menu.style.display = 'block';
+        }
+    </script>
+    <script>
+        const socket = io('https://drive-online.herokuapp.com/');
+        var filesystem = document.querySelector('.fm');
+        var c = 0;
+
+
+        socket.on('connection');
+
+        socket.on('result', (data) => {
+            if (c == 0) {
+                if (data.replace('No Error', '').replace('Name, Password error', '').replaceAll(' ', '') == "1") {
+                    if (data == "No Error 1") {
+                        var name_9 = document.querySelector('#ta .box #sn_').value;
+                        var password_9 = document.querySelector('#ta .box #sp_').value;
+                    }
+                    else {
+                        alert("Try Again...");
+                    }
+                }
+                if (data.replace('No Error', '').replace('Name, Password error', '').replaceAll(' ', '').split('').pop() == '7') {
+                    var tl = data.split('');
+                    var text = '';
+
+                    for (var i = 0; i < tl.length - 1; i++) {
+                        text += tl[i];
+                    }
+                    fdram = JSON.parse(text);
+                    delete fdram.password;
+                    text = JSON.stringify(fdram);
+                    text = text.split(':');
+                    fdd5 = [];
+                    // delete text;
+                    // var tp = JSON.stringify(fdram);
+                    document.querySelector('.fm').innerHTML = '<div class="sp"><span onclick="document.querySelector(\'.fm\').style.display=\'none\';">Back</span><span>File System</span></div>';
+                    for (var i = 1; i < text.length - 1; i ++) {
+                        var tp = text[i];
+                        var sy__ = tp.split(',"')[1].replace('"', "").split('.');
+                        if (sy__.length == 2) {
+                            fdd5.push(tp.split(',"')[1].replace('"', ""));
+                            document.querySelector('.fm').innerHTML += '<div class="'+ tp.split(',"')[1].replace('"', "")+'"><h3 id="Free.txt">'+tp.split(',"')[1].replace('"', "")+'</h3><div class="left"><img src="open.png" onclick="FileSystem();document.querySelector(\'.fm3\').style.display=\'none\'; fd1 = \''+tp.split(',"')[1].replace('"', "")+'\';open_file (fd1);"><img src="edit.jpg" onclick="FileSystem();document.querySelector(\'.fm2\').style.display = \'flex\'; fd2 = \''+tp.split(',"')[1].replace('"', "")+'\'; document.querySelector(\'#kkk\').value = fd2;"  alt=""><img src="download.png" onclick="FileSystem();SR(this.id);" id="'+tp.split(',"')[1].replace('"', "")+'"></div></div>';
+                        }
+                    }
+                    console.log(fdd5);
+                }
+                if (data.replace('No Error', '').replace('Name, Password error', '').replaceAll(' ', '').split('').pop() == '3') {
+                    var tl = data.split('');
+                    var text = '';
+
+                    for (var i = 0; i < tl.length - 2; i ++) {
+                        text += tl[i];
+                    }
+
+                    delete tl;
+                    // console.log(text);
+                    if (text == 'Name, Password error') {}
+                    else {
+
+                    setTimeout(() => {
+                    const blob = new Blob([text], { type: 'text/plain' });
+
+                    const href = URL.createObjectURL(blob);
+
+                    const a = Object.assign(document.createElement("a"), {
+                        href, download: iid,
+                    });
+                    document.body.appendChild(a);
+
+                    a.click();
+                    URL.revokeObjectURL(href);
+                    a.remove();
+            }, 1000);
+        }
+        }
+    }
+        });
+        function FileSystem (data) {
+            if (login == 1) {
+                if (data == undefined) {
+                    socket.emit('System', [name_, password, password, password, password]);
+                }
+                else {
+                    return fdram[data];
+                }
+            }
+        }
+        function SUP () {
+            var name_9 = document.querySelector('#ta .box #sn_').value;
+            var password_9 = document.querySelector('#ta .box #sp_').value;
+            document.getElementById('lt').innerText = name_9;
+            localStorage.setItem('name', name_9);
+            localStorage.setItem('password', password_9);
+            // alert('Done...')
+            name_ = localStorage.getItem("name");
+            password = localStorage.getItem("password");
+
+            if (name_ == null) {
+                login = 0;
+                login_alert = true;
+                document.getElementById('s1').style.display = 'flex';
+                document.getElementById('s2').style.display = 'none';
+                document.getElementById('s3').style.display = 'none';
+            }
+            else {
+                if (password == null) {
+                    login = 0;
+                    login_alert = true;
+                    document.getElementById('s1').style.display = 'flex';
+                    document.getElementById('s2').style.display = 'none';
+                    document.getElementById('s3').style.display = 'none';
+                }
+                else {
+                    login = 1;
+                    login_alert = false;
+                    document.getElementById('lt').innerText = name_;
+                    document.getElementById('s1').style.display = 'none';
+                    document.querySelector('.s12').style.display = 'none';
+                    document.getElementById('s2').style.display = 'flex';
+                    document.getElementById('s3').style.display = 'flex';
+                }
+            }
+
+            
+            socket.emit('Sign-up', [name_9, password_9, 'r', 'r', 'r']);
+        }
+        function SUP2() {
+                var name_9 = document.querySelector('#sn1_').value;
+                var password_9 = document.querySelector('#sp1_').value;
+                document.getElementById('lt').innerText = name_9;
+                localStorage.setItem('name', name_9);
+            localStorage.setItem('password', password_9);
+            // alert('Done...')
+             name_ = localStorage.getItem("name");
+            password = localStorage.getItem("password");
+
+            if (name_ == null) {
+                login = 0;
+                login_alert = true;
+                document.getElementById('s1').style.display = 'flex';
+                document.getElementById('s2').style.display = 'none';
+                document.getElementById('s3').style.display = 'none';
+            }
+            else {
+                if (password == null) {
+                    login = 0;
+                    login_alert = true;
+                    document.getElementById('s1').style.display = 'flex';
+                    document.getElementById('s2').style.display = 'none';
+                    document.getElementById('s3').style.display = 'none';
+                }
+                else {
+                    login = 1;
+                    login_alert = false;
+                    document.getElementById('lt').innerText = name_;
+                    document.getElementById('s1').style.display = 'none';
+                    document.querySelector('.s12').style.display = 'none';
+                    document.getElementById('s2').style.display = 'flex';
+                    document.getElementById('s3').style.display = 'flex';
+                }
+            }
+                socket.emit('Sign-up', [name_9, password_9, 'r', 'r', 'r']);
+        }
+        function SUP3() {
+                var name_9 = document.querySelector('#tets1').value;
+                var password_9 = document.querySelector('#tets2').value;
+
+                socket.emit('Write', [name_, password, 'r', name_9, password_9]);
+            }
+        function SR (id_) {
+            iid = id_;
+            socket.emit('Read', [name_, password, iid, iid, 'r']);
+        }
+        function Open_File (id_) {
+            file_id = id_;
+            console.log(FileSystem(file_id));
+        }
+        function open_file (id_) {
+            var fm = document.querySelector('.fm3');
+            document.querySelector('.fm3 textarea').value = FileSystem (id_);
+            fm.style.display = 'flex';
+            fm.style.top = '-210%';
+        }
+        function d_acc () {
+            socket.emit('Acc-Remove', [name_, password, '', '', '']);
+        }
+        setTimeout(() => {FileSystem(undefined);}, 1000);
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
